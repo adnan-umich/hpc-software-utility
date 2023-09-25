@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "hpc-software-utility"
+version = "1.0.0"
+description = ""
+authors = ["Adnan Hafeez"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+tabulate = "^0.9.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
