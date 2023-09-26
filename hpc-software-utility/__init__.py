@@ -139,8 +139,8 @@ def get_module_dependency(path:str, pkg_name:str, pattern:str='*.lua') -> list:
                 pkg_ver = Path(file).stem
 
                 # Use a regular expression to find "depends_on" and capture the string inside parentheses
-                matches = re.findall(r'depends_on\("([^"]+)"\)', lua_contents)
-
+                matches = re.findall(r'^\s*depends_on\("([^"]+)"\)', lua_contents, re.MULTILINE)
+ 
                 if len(matches) > 0:
                     output.append([f"{pkg_name}/{pkg_ver}", ", ".join(matches)])
 
