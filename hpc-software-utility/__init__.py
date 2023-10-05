@@ -130,6 +130,14 @@ def get_module_dependency(path:str, pkg_name:str, pattern:str='*.lua') -> list:
     # Instantiate empty list
     output = list()
 
+    # convert tuple to string utility
+    def convertTuple(tup):
+        # initialize an empty string
+        str = ''
+        for item in tup:
+            str = str + item
+        return str
+
     for file in glob.glob(os.path.join(path,pattern)):
         try:
             with open(file, 'r') as lua_file:
@@ -139,14 +147,29 @@ def get_module_dependency(path:str, pkg_name:str, pattern:str='*.lua') -> list:
                 pkg_ver = Path(file).stem
 
                 # Use a regular expression to find "depends_on" and capture the string inside parentheses
-                matches = re.findall(r'^\s*depends_on\("([^"]+)"\)', lua_contents, re.MULTILINE)
- 
+                #matches = re.findall(r'^\s*depends_on\("([^"]+)"\)', lua_contents, re.MULTILINE)
+                #matches = re.findall(r'"([^"]+/[^"]+)"', lua_contents, re.MULTILINE)
+                # Define a regular expression pattern to match the desired pattern
+                #pattern = r'^\s*depends_on\("([^"]+(?:",\s*"[^"]+)*)"\)'
+
+                pattern = r'(?<!--\s)depends_on\("([^"]+(?:",\s*"[^"]+)*)"\)'
+                
+                # Search for the pattern in the input string
+                matches = re.findall(pattern, lua_contents)
+                
+                '''
+                for _ in matches:
+                    print(type(_), _)
+                #matches = convertTuple(matches)
+                print(", ".join(matches))
+                '''
+                
                 if len(matches) > 0:
-                    output.append([f"{pkg_name}/{pkg_ver}", ", ".join(matches)])
+                    output.append([f"{pkg_name}/{pkg_ver}", (" ".join(matches)).replace('"', ' ').replace(',','').replace('  ', ' ')])
 
                 else:
                     output.append([f"{pkg_name}/{pkg_ver}",""])
-
+                
         # Error handling
         except FileNotFoundError:
             print(f"Error: File '{filename}' not found.")
